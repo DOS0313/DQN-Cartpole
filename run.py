@@ -109,6 +109,11 @@ def train_dqn(episodes):
     scores = []
 
     plt.ion()
+    fig, ax = plt.subplots()
+    line, = ax.plot(scores)
+    ax.set_xlabel('Episode')
+    ax.set_ylabel('Duration')
+    ax.set_title('Training Progress')
 
     for e in range(episodes):
         state, _ = env.reset()
@@ -128,14 +133,13 @@ def train_dqn(episodes):
             if len(agent.memory) > batch_size:
                 agent.replay(batch_size)
 
-        # 진행 상황 시각화
-        if e % 10 == 0:
-            plt.clf()
-            plt.plot(scores)
-            plt.xlabel('Episode')
-            plt.ylabel('Duration')
-            plt.title('Training Progress')
-            plt.pause(0.001)
+        # Update plot after each episode
+        line.set_ydata(scores)
+        line.set_xdata(range(len(scores)))
+        ax.relim()
+        ax.autoscale_view()
+        plt.draw()
+        plt.pause(0.001)
 
     plt.ioff()
     plt.show()
